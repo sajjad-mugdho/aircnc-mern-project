@@ -1,8 +1,51 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { toast } from 'react-hot-toast'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../../contexts/AuthProvider'
 import PrimaryButton from '../../Components/Button/PrimaryButton'
+import SmallSpinner from '../../Components/Spinner/SmallSpinner'
+import { setAuthToken } from '../../Api/Auth'
 
 const Login = () => {
+  const { signInWithGoogle, signin, loading, setLoading } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location?.state?.from?.pathname || '/';
+
+  const handlesubmit = e => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    signin(email, password)
+      .then(result => {
+        const user = result.user;
+        console.log(user);
+        setAuthToken(result.user)
+        toast.success("Login Successfully.......")
+        navigate(from, { replace: true });
+      }).catch(err => {
+        console.error(err)
+        toast.error(err.message)
+        setLoading(false)
+      })
+  };
+
+  const handleGoogleLogin = () => {
+    signInWithGoogle().then(result => {
+      const user = result.user;
+      setAuthToken(result.user)
+      console.log(user);
+    }).catch(err => {
+      console.error(err)
+      toast.error(err.message)
+      setLoading(false)
+      navigate(from, { replace: true });
+    })
+  }
+
   return (
     <div className='flex justify-center items-center pt-8'>
       <div className='flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900'>
@@ -12,7 +55,7 @@ const Login = () => {
             Sign in to access your account
           </p>
         </div>
-        <form
+        <form onSubmit={handlesubmit}
           noValidate=''
           action=''
           className='space-y-6 ng-untouched ng-pristine ng-valid'
@@ -54,7 +97,7 @@ const Login = () => {
               type='submit'
               classes='w-full px-8 py-3 font-semibold rounded-md bg-gray-900 hover:bg-gray-700 hover:text-white text-gray-100'
             >
-              Sign in
+              {loading ? <SmallSpinner /> : "Sign In"}
             </PrimaryButton>
           </div>
         </form>
@@ -71,7 +114,7 @@ const Login = () => {
           <div className='flex-1 h-px sm:w-16 dark:bg-gray-700'></div>
         </div>
         <div className='flex justify-center space-x-4'>
-          <button aria-label='Log in with Google' className='p-3 rounded-sm'>
+          <button onClick={handleGoogleLogin} aria-label='Log in with Google' className='p-3 rounded-sm'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 32 32'
