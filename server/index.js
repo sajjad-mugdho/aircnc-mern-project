@@ -23,9 +23,10 @@ async function run() {
   try {
     const homesCollection = client.db('aircncdb').collection('homes')
     const userCollection = client.db('aircncdb').collection('users')
+    const bookingsCollection = client.db('aircncdb').collection('bookings')
 
 
-    app.put('/users/:email', async (req, res) => {
+    app.put('/user/:email', async (req, res) => {
       const email = req.params.email;
       const user = req.body;
       const filter = { email: email };
@@ -40,8 +41,42 @@ async function run() {
         expiresIn: "1d"
       });
 
+     // Get a single user by email
+    app.get('/user/:email', async (req, res) => {
+      const email = req.params.email
+      const query = { email: email }
+
+      const user = await userCollection.findOne(query)
+      console.log(user.role)
+      res.send(user)
+    })
+
+
+      // Save a booking
+      app.post('/bookings', async (req, res) => {
+        const bookingData = req.body
+        const result = await bookingsCollection.insertOne(bookingData)
+        
+        res.send(result)
+      })
+
+      // Get All Bookings
+
+      app.get('/bookings', async (req, res) => {
+        let query = {};
+        const email = req.query.email;
+        if (email) {
+          query = {
+            guestEmail: email
+          }
+        }
+        const bookings = await bookingsCollection.find(query).toArray();
+
+        res.send(bookings)
+      })
+
       res.send({ result, token })
-      console.log(result);
+      
     })
     console.log('Database Connected...')
   } finally {
