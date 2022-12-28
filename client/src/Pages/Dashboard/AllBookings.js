@@ -1,20 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { getAllBookings } from '../../Api/Bookings'
 
 import { AuthContext } from '../../contexts/AuthProvider'
 
 const AllBookings = () => {
-//   const { user } = useContext(AuthContext)
-//   const [bookings, setBookings] = useState(null)
-//   const [loading, setLoading] = useState(true)
+  const { user } = useContext(AuthContext)
+  const [bookings, setBookings] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-//   useEffect(() => {
-//     setLoading(true)
-//     getAllBookings(user?.email).then(data => {
-//       console.log(data)
-//       setBookings(data)
-//       setLoading(false)
-//     })
-//   }, [user])
+  useEffect(() => {
+    setLoading(true)
+    getAllBookings(user?.email).then(data => {
+      console.log(data)
+      setBookings(data)
+      setLoading(false)
+    })
+  }, [user])
   return (
     <div class='container mx-auto px-4 sm:px-8'>
       <div class='py-8'>

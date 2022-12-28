@@ -3,7 +3,7 @@ export const setAuthToken = (user) => {
         email: user?.email
     };
 
-    fetch(`http://localhost:8000/users/${user?.email}`, {
+    fetch(`http://localhost:8000/user/${user?.email}`, {
         method: "PUT",
         headers:{
             "content-type": "application/json"

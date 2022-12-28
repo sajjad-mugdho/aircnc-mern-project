@@ -44,9 +44,7 @@ const BecomeAHost = () => {
         <>{!loading && <BecomeHostForm handleSubmit={handleSubmit} />}</>
       )}
     </>
-    // <>
-    // <BecomeHostForm handleSubmit={handleSubmit}/>
-    // </>
+    
   )
 }
 

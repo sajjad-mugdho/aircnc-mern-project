@@ -12,7 +12,8 @@ export const hostRequest = async hostData => {
     const data = await response.json()
   
     return data
-  } 
+  }
+  
   // Get user role
   export const getRole = async email => {
     const url = `${process.env.REACT_APP_API_URL}/user/${email}`
@@ -23,11 +24,29 @@ export const hostRequest = async hostData => {
   
     return user?.role
   }
-// Get All Users
-export const getAllUsers = async () => {
+  
+  // Get All Users
+  export const getAllUsers = async () => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/users`)
-
+  
     const users = await response.json()
-
+  
     return users
-}
+  }
+  
+  export const makeHost = async user => {
+    delete user._id
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/user/${user?.email}`,
+      {
+        method: 'PUT',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ ...user, role: 'host' }),
+      }
+    )
+    const users = await response.json()
+  
+    return users
+  }
