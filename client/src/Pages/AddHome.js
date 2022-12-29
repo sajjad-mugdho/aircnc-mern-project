@@ -48,8 +48,10 @@ const AddHome = () => {
         addHome(homeData).then(data => {
           console.log(data)
         })
+        console.log(homeData);
       })
       .catch(err => console.log(err))
+
   }
   return (
     <>
